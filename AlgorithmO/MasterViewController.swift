@@ -12,15 +12,16 @@ class MasterViewController: UITableViewController {
 
     var detailViewController: DetailViewController? = nil
     var objects = [AnyObject]()
-
+    
+    let algorithms : Dictionary<String,Array<String>> = ["Sorting":["Merge Sort", "Quick Sort"]]
+    let algorithmSections : Array<String> = ["Sorting"]
+    
+    @IBOutlet weak var tableViewHandle: UITableView!
 
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
-        self.navigationItem.leftBarButtonItem = self.editButtonItem()
-
-        let addButton = UIBarButtonItem(barButtonSystemItem: .Add, target: self, action: #selector(insertNewObject(_:)))
-        self.navigationItem.rightBarButtonItem = addButton
+//        self.navigationItem.leftBarButtonItem = self.editButtonItem()
         if let split = self.splitViewController {
             let controllers = split.viewControllers
             self.detailViewController = (controllers[controllers.count-1] as! UINavigationController).topViewController as? DetailViewController
@@ -37,18 +38,13 @@ class MasterViewController: UITableViewController {
         // Dispose of any resources that can be recreated.
     }
 
-    func insertNewObject(sender: AnyObject) {
-        objects.insert(NSDate(), atIndex: 0)
-        let indexPath = NSIndexPath(forRow: 0, inSection: 0)
-        self.tableView.insertRowsAtIndexPaths([indexPath], withRowAnimation: .Automatic)
-    }
-
     // MARK: - Segues
 
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         if segue.identifier == "showDetail" {
             if let indexPath = self.tableView.indexPathForSelectedRow {
-                let object = objects[indexPath.row] as! NSDate
+                let sectionName = algorithmSections[indexPath.section]
+                let object = algorithms[sectionName]![indexPath.row]
                 let controller = (segue.destinationViewController as! UINavigationController).topViewController as! DetailViewController
                 controller.detailItem = object
                 controller.navigationItem.leftBarButtonItem = self.splitViewController?.displayModeButtonItem()
@@ -60,24 +56,52 @@ class MasterViewController: UITableViewController {
     // MARK: - Table View
 
     override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-        return 1
+        return algorithmSections.count
     }
 
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return objects.count
+        let sectionName = algorithmSections[section]
+        return algorithms[sectionName]!.count
     }
 
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier("Cell", forIndexPath: indexPath)
 
-        let object = objects[indexPath.row] as! NSDate
-        cell.textLabel!.text = object.description
+        let sectionName = algorithmSections[indexPath.section]
+        let algorithmName = algorithms[sectionName]![indexPath.row]
+        
+        cell.textLabel!.text = algorithmName
         return cell
     }
 
     override func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
         // Return false if you do not want the specified item to be editable.
-        return true
+        return false
+    }
+    
+    override func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        return algorithmSections[section]
+    }
+    
+    override func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+
+        //TODO: Do a custom table view cell for this
+        let headerTitle = algorithmSections[section]
+        
+        let headerView = UILabel(frame: CGRectMake(0, 0, self.tableView.frame.width, 40))
+        headerView.textAlignment = .Center
+        headerView.text = headerTitle
+        
+        
+        return headerView
+    }
+    
+    override func tableView(tableView: UITableView, editingStyleForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCellEditingStyle {
+        if (self.tableView.editing) {
+            return UITableViewCellEditingStyle.Delete;
+        }
+        
+        return UITableViewCellEditingStyle.None;
     }
 
     override func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {

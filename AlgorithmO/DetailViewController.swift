@@ -29,22 +29,12 @@ class DetailViewController: UIViewController {
         }
         
         //TESTING VIEWS!!!!
-        
-        var testArray = [1, 2, 4, 5, 6, 234, 62];
-        
-//        let arrayView = ArrayView.init(arrayToVisualise: testArray)
-//        arrayView.frame = CGRectMake(50, 100, self.view.frame.width - 100, 40)
-//        arrayView.update()
         self.arrayView = ArrayView.init(frame: CGRectMake(50, 100, self.view.frame.width - 100, 40))
-    
         self.arrayView!.array = [1,5 ,6, 7]
-        
+    
         self.view.addSubview(self.arrayView!)
         
-        var timer = NSTimer.scheduledTimerWithTimeInterval(5, target: self, selector: "testArrays", userInfo: nil, repeats: false)
-//        UIView.animateWithDuration(5, delay: 100, options: .CurveEaseInOut, animations: {
-//            arrayView.array = testArray
-//            }) { (YES) in }
+        _ = NSTimer.scheduledTimerWithTimeInterval(5, target: self, selector: #selector(DetailViewController.testArrays), userInfo: nil, repeats: false)
         
     }
     

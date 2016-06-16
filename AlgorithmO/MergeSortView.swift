@@ -47,10 +47,12 @@ class MergeSortView: UIView {
         let columnWidth = (self.frame.width / CGFloat(numberOfColumns));
         
         let Xcoordinate = columnWidth * CGFloat(column)
+        let columnCenter = Xcoordinate + (columnWidth / 2)
         let Ycoordinate = /*(self.frame.height / CGFloat(numberOfRows))*/ 80 * CGFloat(row) + 80
         
-        let arrayViewFrame = CGRectMake(Xcoordinate + 5, Ycoordinate, columnWidth - 10 , 40)
+        let arrayViewFrame = CGRectMake(Xcoordinate + 5, Ycoordinate, /*columnWidth - 10*/ CGFloat(array.count * 40) , 40)
         let arrayView = ArrayView.init(frame: arrayViewFrame)
+        arrayView.center = CGPointMake(columnCenter, arrayView.center.y)
         arrayView.layer.borderWidth = 3
         arrayView.layer.borderColor = UIColor.redColor().CGColor
         self.addSubview(arrayView)

@@ -15,16 +15,7 @@ class ArrayView: UIView {
             // Update the view.
             self.update()
         }
-        
-        
     }
-
-    
-//    dynamic var myDate = NSDate()
-    
-//    func updateDate() {
-//        self.update()
-//    }
     
     override init (frame : CGRect) {
         super.init(frame : frame)
@@ -51,7 +42,7 @@ class ArrayView: UIView {
     }
     
     func update() {
-        self.removeSubviews()
+        self.subviews.forEach({ $0.removeFromSuperview() })
         
         let elementWidth = self.frame.width / CGFloat(self.array!.count)
         let elementHeight = self.frame.height

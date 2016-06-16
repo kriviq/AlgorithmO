@@ -52,25 +52,72 @@ class MergeSortView: UIView {
         
         let arrayViewFrame = CGRectMake(Xcoordinate + 5, Ycoordinate, /*columnWidth - 10*/ CGFloat(array.count * 40) , 40)
         let arrayView = ArrayView.init(frame: arrayViewFrame)
-        arrayView.center = CGPointMake(columnCenter, arrayView.center.y)
+        
+        if (row > 0) {
+            let parentCenter = self.parentCenter(row, column: column)
+            arrayView.center = parentCenter
+        }
+        
         arrayView.layer.borderWidth = 3
         arrayView.layer.borderColor = UIColor.redColor().CGColor
         self.addSubview(arrayView)
         arrayView.array = array
-        
-        if (array.count == 1 && row < numberOfRows ) {
-            self.visualizeMergeSort(array, row: row + 1, column: column * 2)
-            return
-        }
-        else if (array.count == 1 ) {
-            return
-        }
-        
-        let middleIndex = array.count / 2
-        let leftSubArray = Array<NSInteger>(array[0...(middleIndex - 1)])
-        let rightSubArray = Array<NSInteger>(array[middleIndex...(array.count - 1)])
-        self.visualizeMergeSort(leftSubArray, row: row + 1, column: column * 2)
-        self.visualizeMergeSort(rightSubArray, row: row + 1, column: column * 2 + 1)
 
+        UIView.animateWithDuration(1) { () -> Void in
+            arrayView.center = CGPointMake(columnCenter, Ycoordinate + 20)
+        }
+        
+        UIView.animateWithDuration(1, delay: 1, options: .CurveEaseInOut, animations: { () -> Void in
+            arrayView.center = CGPointMake(columnCenter, Ycoordinate + 20)
+            }) { (finished) -> Void in
+                if (finished) {
+                    if (array.count == 1 && row < numberOfRows ) {
+                        self.visualizeMergeSort(array, row: row + 1, column: column * 2)
+                        return
+                    }
+                    else if (array.count == 1 ) {
+                        return
+                    }
+                    
+                    let middleIndex = array.count / 2
+                    let leftSubArray = Array<NSInteger>(array[0...(middleIndex - 1)])
+                    let rightSubArray = Array<NSInteger>(array[middleIndex...(array.count - 1)])
+                    self.visualizeMergeSort(leftSubArray, row: row + 1, column: column * 2)
+                    self.visualizeMergeSort(rightSubArray, row: row + 1, column: column * 2 + 1)
+                }
+
+        }
+//        UIView.animateWithDuration(1, animations: { () -> Void in
+//            arrayView.center = CGPointMake(columnCenter, Ycoordinate + 20)
+//            }) { (YES) -> Void in
+//                if (array.count == 1 && row < numberOfRows ) {
+//                    self.visualizeMergeSort(array, row: row + 1, column: column * 2)
+//                    return
+//                }
+//                else if (array.count == 1 ) {
+//                    return
+//                }
+//                
+//                let middleIndex = array.count / 2
+//                let leftSubArray = Array<NSInteger>(array[0...(middleIndex - 1)])
+//                let rightSubArray = Array<NSInteger>(array[middleIndex...(array.count - 1)])
+//                self.visualizeMergeSort(leftSubArray, row: row + 1, column: column * 2)
+//                self.visualizeMergeSort(rightSubArray, row: row + 1, column: column * 2 + 1)
+//        }
+    }
+    
+    func centerAndSizeForArray(row row: NSInteger, column:NSInteger) -> (CGPoint, CGSize) {
+        return (CGPoint.zero, CGSize.zero)
+    }
+    
+    func parentCenter(row: NSInteger, column: NSInteger)  -> CGPoint {
+        
+        let numberOfColumns = Int(pow(Double(2),Double(row - 1)))
+        let columnWidth = (self.frame.width / CGFloat(numberOfColumns));
+        let XOffset: CGFloat = (column % 2 == 1) ? 20 * CGFloat(numberOfColumns) : -20 * CGFloat(numberOfColumns);
+        
+        let YCenter = 80 * CGFloat(row - 1) + 100
+        let XCenter = columnWidth * CGFloat(column / 2) + (columnWidth / 2) + XOffset
+        return CGPointMake(XCenter, YCenter)
     }
 }
